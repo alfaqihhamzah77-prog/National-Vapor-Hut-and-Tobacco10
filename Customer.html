@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Dashboard</title>
+<style>
+body { font-family: Arial, sans-serif; text-align: center; background: #f0f0f0; }
+h1 { font-size: 2.5em; margin-top: 30px; color: #1a1a1a; }
+input, button { font-size: 1.2em; padding: 10px; margin: 10px; }
+#points { font-size: 2em; margin-top: 20px; color: #2a5298; white-space: pre-line; }
+</style>
+</head>
+<body>
+<h1>Customer Points</h1>
+<input type="text" id="cardId" placeholder="Enter Card ID">
+<button onclick="getPoints()">Show Points</button>
+<div id="points"></div>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbz9sU7b6N2tJ97XF0Menvgm88w33FcOtRinIrs46d7pnG_aclp_RwGmOrE2ZmSaQbIudw/exec";
+
+function getPoints(){
+    const cardId = document.getElementById("cardId").value.trim();
+    if(!cardId) return alert("Please enter Card ID");
+    fetch(`${scriptURL}?action=get&cardId=${cardId}`)
+    .then(res => res.json())
+    .then(data => {
+        if(data.error) { document.getElementById("points").innerText = data.error; }
+        else { document.getElementById("points").innerText = `Points: ${data.points}\nLast Updated: ${data.lastUpdated}`; }
+    });
+}
+</script>
+</body>
+</html>
