@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Dashboard</title>
+<style>
+body { font-family: Arial, sans-serif; text-align: center; background: #eef2f3; }
+h1 { font-size: 2.5em; margin-top: 20px; color: #1a1a1a; }
+input, button { font-size: 1.1em; padding: 10px; margin: 8px; }
+#message { font-size: 1.3em; margin-top: 20px; color: #2a5298; white-space: pre-line; }
+</style>
+</head>
+<body>
+<h1>Employee Dashboard</h1>
+<input type="password" id="pass" placeholder="Password"><br>
+<input type="text" id="cardId" placeholder="Card ID"><br>
+<input type="number" id="amount" placeholder="Add Amount"><br>
+<button onclick="addPoints()">Add Points</button><br>
+<input type="number" id="redeem" placeholder="Points to Redeem"><br>
+<button onclick="redeemPoints()">Redeem Points</button><br>
+<input type="text" id="newCardId" placeholder="New Card ID"><br>
+<input type="text" id="newName" placeholder="New Customer Name"><br>
+<input type="number" id="initialPoints" placeholder="Initial Points"><br>
+<button onclick="addCustomer()">Add Customer</button>
+<div id="message"></div>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbz9sU7b6N2tJ97XF0Menvgm88w33FcOtRinIrs46d7pnG_aclp_RwGmOrE2ZmSaQbIudw/exec";
+
+function addPoints(){
+    const cardId = document.getElementById("cardId").value.trim();
+    const amount = Number(document.getElementById("amount").value);
+    const pass = document.getElementById("pass").value.trim();
+    if(!cardId || !amount || !pass) return alert("Please fill all fields");
+    fetch(`${scriptURL}?action=add&cardId=${cardId}&amount=${amount}&pass=${pass}`)
+    .then(res=>res.json()).then(data=>{
+        if(data.error) document.getElementById("message").innerText=data.error;
+        else document.getElementById("message").innerText=`Points Added. Current Points: ${data.points}`;
+    });
+}
+
+function redeemPoints(){
+    const cardId = document.getElementById("cardId").value.trim();
+    const redeem = Number(document.getElementById("redeem").value);
+    const pass = document.getElementById("pass").value.trim();
+    if(!cardId || !redeem || !pass) return alert("Please fill all fields");
+    fetch(`${scriptURL}?action=redeem&cardId=${cardId}&redeem=${redeem}&pass=${pass}`)
+    .then(res=>res.json()).then(data=>{
+        if(data.error) document.getElementById("message").innerText=data.error;
+        else document.getElementById("message").innerText=`Points Redeemed. Current Points: ${data.points}`;
+    });
+}
+
+function addCustomer(){
+    const newCardId = document.getElementById("newCardId").value.trim();
+    const newName = document.getElementById("newName").value.trim();
+    const points = Number(document.getElementById("initialPoints").value);
+    const pass = document.getElementById("pass").value.trim();
+    if(!newCardId || !newName || !pass) return alert("Please fill all fields");
+    fetch(`${scriptURL}?action=addCustomer&newCardId=${newCardId}&newName=${newName}&points=${points}&pass=${pass}`)
+    .then(res=>res.json()).then(data=>{
+        if(data.error) document.getElementById("message").innerText=data.error;
+        else document.getElementById("message").innerText=`Customer Added Successfully!`;
+    });
+}
+</script>
+</body>
+</html>
